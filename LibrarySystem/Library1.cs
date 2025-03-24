@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using System.Reflection;
 
 namespace LibrarySystem
 {
@@ -208,9 +210,9 @@ namespace LibrarySystem
                 MessageBox.Show(ex.Message);
             }
 
-        }
+        }   
 
-        // =============================  AUTHORS  =============================
+        // =============================  BOoks  =============================
         public DataTable FetchBook()
         {
             var result = new DataTable();
@@ -241,7 +243,78 @@ namespace LibrarySystem
         }
 
 
-        // =============================  AUTHORS  =============================
+        public void InsertBook(string bookTitle , string bookRating, string authorID)
+        {
+            string query = "INSERT INTO books (book_title, author_id, book_rating) VALUES (@BookTitle, @AuthorID, @BookRating)";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@BookTitle", bookTitle);
+                        command.Parameters.AddWithValue("@AuthorID", Convert.ToInt32(authorID));
+                        command.Parameters.AddWithValue("@Bookrating", bookRating);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void UpdateBook(int BookId, string bookTitle, string bookRating, string authorID)
+        {
+            string query = "UPDATE books SET book_title = @BookTitle, author_id = @AuthorID, book_rating = @BookRating WHERE book_id = @BookID";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@BookTitle", bookTitle);
+                        command.Parameters.AddWithValue("@AuthorID", Convert.ToInt32(authorID));
+                        command.Parameters.AddWithValue("@Bookrating", bookRating);
+                        command.Parameters.AddWithValue("@BookID", Convert.ToInt32(BookId));
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void DeleteBook(int id)
+        {
+            string query = "Delete From books WHERE book_id = @id;";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", id);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+        // =============================  BORROwing records  =============================
         public DataTable FetchBorrowingRecord()
         {
             var result = new DataTable();
@@ -271,6 +344,80 @@ namespace LibrarySystem
             return result;
         }
 
+
+        public void InsertBorrowed(string BookIDFK, string MemberIDFK, string TimeBorrowed, string TimesBorrowed)
+        {
+            string query = "INSERT INTO borrowingrecords (book_id, member_id, time_borrowed, times_borrowed) VALUES (@BookIDFK, @MemberIDFK, @TimeBorrowed, @TimesBorrowed)";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@BookIDFK", Convert.ToInt32(BookIDFK));
+                        command.Parameters.AddWithValue("@MemberIDFK", Convert.ToInt32(MemberIDFK));
+                        command.Parameters.AddWithValue("@TimeBorrowed", Convert.ToDateTime(TimeBorrowed));
+                        command.Parameters.AddWithValue("@TimesBorrowed", Convert.ToInt32(TimesBorrowed));
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void UpdateBorrowed(int id, string BookIDFK, string MemberIDFK, string TimeBorrowed, string TimesBorrowed)
+        {
+            string query = "UPDATE borrowingrecords SET book_id = @BookIDFK, member_id = @MemberIDFK, time_borrowed = @TimeBorrowed, times_borrowed = @TimesBorrowed WHERE record_id = @RecordID";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@BookIDFK", Convert.ToInt32(BookIDFK));
+                        command.Parameters.AddWithValue("@MemberIDFK", Convert.ToInt32(MemberIDFK));
+                        command.Parameters.AddWithValue("@TimeBorrowed", Convert.ToDateTime(TimeBorrowed));
+                        command.Parameters.AddWithValue("@TimesBorrowed", Convert.ToInt32(TimesBorrowed));
+                        command.Parameters.AddWithValue("@RecordID", Convert.ToInt32(id));
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void DeleteBorrowed(int id)
+        {
+            string query = "Delete From borrowingrecords WHERE record_id = @id;";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", id);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
 
     }
 }

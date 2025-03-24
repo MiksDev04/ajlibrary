@@ -159,7 +159,124 @@ namespace LibrarySystem
             AuthorName.Text = dataGridView2.SelectedRows[0].Cells[1].Value.ToString();
         }
 
-      
+
+        // Books Functions
+        private void DeleteBookBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView3.SelectedRows[0].Cells[0].Value.ToString() != "")
+                {
+                    DialogResult = MessageBox.Show("Are you sure you want to permanently delete this record?", "Alert", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (DialogResult == DialogResult.Yes)
+                    {
+                        library1.DeleteBook(Convert.ToInt32(dataGridView3.SelectedRows[0].Cells[0].Value));
+                        dataGridView3.DataSource = library1.FetchBook();
+                        EmptyInputs();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please select a row to delete", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateBookBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int id = Convert.ToInt32(dataGridView3.SelectedRows[0].Cells[0].Value);
+                library1.UpdateBook(id, BookTiitle.Text, BookRating.Text, AuthorIDFK.Value.ToString());
+                dataGridView3.DataSource = library1.FetchBook();
+                EmptyInputs();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please select a row to update", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AddBookBtn_Click(object sender, EventArgs e)
+        {
+            if (BookTiitle.Text != "" && BookRating.Text != "" && AuthorIDFK.Value != 0)
+            {
+                library1.InsertBook(BookTiitle.Text , BookRating.Text, AuthorIDFK.Value.ToString());
+                dataGridView3.DataSource = library1.FetchBook();
+                EmptyInputs();
+            }
+            else
+            {
+                MessageBox.Show("Please fill up all fields", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dataGridView3_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            BookID.Text = dataGridView3.SelectedRows[0].Cells[0].Value.ToString();
+            BookTiitle.Text = dataGridView3.SelectedRows[0].Cells[1].Value.ToString();
+            AuthorIDFK.Value = Convert.ToInt32(dataGridView3.SelectedRows[0].Cells[2].Value);
+            BookRating.Text = dataGridView3.SelectedRows[0].Cells[3].Value.ToString();
+        }
+
+        private void DeleteRecordBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView4.SelectedRows[0].Cells[0].Value.ToString() != "")
+                {
+                    DialogResult = MessageBox.Show("Are you sure you want to permanently delete this record?", "Alert", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (DialogResult == DialogResult.Yes)
+                    {
+                        library1.DeleteBorrowed(Convert.ToInt32(dataGridView4.SelectedRows[0].Cells[0].Value));
+                        dataGridView4.DataSource = library1.FetchBorrowingRecord();
+                        EmptyInputs();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please select a row to delete", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateRecordBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int id = Convert.ToInt32(dataGridView4.SelectedRows[0].Cells[0].Value);
+                library1.UpdateBorrowed(id, BookIDFK.Text, MemberIDFK.Text, TimeBorrowed.Text, TimesBorrowed.Value.ToString());
+                dataGridView4.DataSource = library1.FetchBorrowingRecord();
+                EmptyInputs();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please select a row to update", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AddRecordBtn_Click(object sender, EventArgs e)
+        {
+            if (BookIDFK.Text != "" && MemberIDFK.Text != "" && TimesBorrowed.Value != 0)
+            {
+                library1.InsertBorrowed(BookIDFK.Text, MemberIDFK.Text, TimeBorrowed.Text, TimesBorrowed.Value.ToString());
+                dataGridView4.DataSource = library1.FetchBorrowingRecord();
+                EmptyInputs();
+            }
+            else
+            {
+                MessageBox.Show("Please fill up all fields", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dataGridView4_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            RecordID.Text = dataGridView4.SelectedRows[0].Cells[0].Value.ToString();
+            BookIDFK.Text = dataGridView4.SelectedRows[0].Cells[1].Value.ToString();
+            MemberIDFK.Text = dataGridView4.SelectedRows[0].Cells[2].Value.ToString();
+            TimeBorrowed.Text = dataGridView4.SelectedRows[0].Cells[3].Value.ToString();
+            TimesBorrowed.Value = Convert.ToInt32(dataGridView4.SelectedRows[0].Cells[4].Value);
+        }
     }
 }
 
